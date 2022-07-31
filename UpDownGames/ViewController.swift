@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var tryCountLabel: UILabel!
     @IBOutlet weak var sliderValueLabel: UILabel!
-    @IBOutlet weak var minmunValueLabel: UILabel!
+    @IBOutlet weak var minimunValueLabel: UILabel!
     @IBOutlet weak var maximumValueLabel: UILabel!
 
     override func viewDidLoad() {
@@ -25,11 +25,42 @@ class ViewController: UIViewController {
     
     @IBAction func sliderValueChanged(_ sender: UISlider) {
         print(sender.value)
+        let intValue:Int = Int(sender.value)
+        sliderValueLabel.text = String(intValue)
+    }
+    
+    func showAlert(message: String) {
+        let alert = UIAlertController(title: nil,
+                                      message: message,
+                                      preferredStyle: .alert)
+        let okAction = UIAlertAction(title:"OK", style: .default) { (action) in self.reset()
+        }
+        
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
     }
     
     @IBAction func touchUpHitButton(_ sender: UIButton) {
         print(slider.value)
+        let hitValue:Int = Int(slider.value)
+        slider.value = Float(hitValue)
         
+        tryCount = tryCount+1
+        tryCountLabel.text = "\(tryCount) /5"
+        
+        if randomValue == hitValue {
+            showAlert(message: "You hit!")
+            reset()
+        }else if tryCount >= 5 {
+            showAlert(message: "You lose!")
+            reset()
+        }else if randomValue > hitValue {
+            slider.minimumValue = Float(hitValue)
+            minimunValueLabel.text = String(hitValue)
+        } else {
+            slider.maximumValue = Float(hitValue)
+            maximumValueLabel.text = String(hitValue)
+        }
     }
     
     @IBAction func touchUpResetButton(_ sender: UIButton) {
@@ -45,7 +76,7 @@ class ViewController: UIViewController {
         slider.minimumValue=0
         slider.maximumValue=30
         slider.value=15
-        minmunValueLabel.text="0"
+        minimunValueLabel.text="0"
         maximumValueLabel.text="30"
         sliderValueLabel.text="15"
     }
